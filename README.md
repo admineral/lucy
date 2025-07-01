@@ -1,165 +1,325 @@
-# Next.js 15 + LM Studio Integration
+# Lucy - Local AI Chat Interface
 
-A modern chat interface powered by local LLMs running through LM Studio. Experience the power of AI without sending your data to the cloud.
+## Overview
 
-## Features
+Lucy is a modern, privacy-focused chat interface that runs entirely on your local machine using LM Studio. Built with Next.js 15, it provides a seamless experience for interacting with large language models without sending your data to external servers.
 
-- 🔒 **Local & Private**: Your conversations stay on your machine
-- ⚡ **Fast & Efficient**: Optimized for local inference
-- 🤖 **Multiple Models**: Switch between different LLMs
-- 🎛️ **Model Management**: Load and unload models dynamically
-- 💬 **Real-time Chat**: Interactive chat interface
-- 🎨 **Modern UI**: Beautiful, responsive design with Tailwind CSS
+### Key Features
 
-## Prerequisites
+- **Complete Privacy**: All conversations stay on your machine
+- **Real-time Streaming**: Live responses with thinking process visualization  
+- **Model Management**: Load, unload, and switch between different LLMs
+- **Modern Interface**: Responsive design with smooth animations
+- **TypeScript**: Full type safety throughout the application
 
-1. **LM Studio Desktop App**
-   - Download from [lmstudio.ai](https://lmstudio.ai)
-   - Install and run the application
-   - Enable the local server (usually runs on `http://localhost:1234`)
+---
 
-2. **Node.js** (v18 or higher)
+## Quick Start Guide
 
-## Quick Start
+> **For Beginners**: Follow these steps to get Lucy running in 5 minutes
 
-1. **Clone and install dependencies**:
-   ```bash
-   git clone <your-repo>
-   cd lucy
-   npm install
-   ```
+### Step 1: Install LM Studio
 
-2. **Download a model** (choose one):
-   ```bash
-   # Using LM Studio CLI
-   lms get llama-3.2-1b-instruct
-   
-   # Or download through LM Studio GUI
-   # Search for "llama-3.2-1b-instruct" in the app
-   ```
+1. Download LM Studio from [lmstudio.ai](https://lmstudio.ai)
+2. Install and launch the application
+3. In LM Studio, go to the "Local Server" tab and start the server
+4. The server should run on `http://localhost:1234`
 
-3. **Start LM Studio**:
-   - Open LM Studio desktop app
-   - Load your downloaded model
-   - Enable the local server in settings
+### Step 2: Download a Model
 
-4. **Run the development server**:
-   ```bash
-   npm run dev
-   ```
+In LM Studio's search tab, download one of these available models:
 
-5. **Open your browser**:
-   - Navigate to [http://localhost:3000](http://localhost:3000)
-   - Start chatting with your local LLM!
+```bash
+# Lightweight and fast (recommended for most users)
+qwen3-4b                    # 2.12 GB - Best for limited RAM
 
-## Available Models
+# Balanced performance
+qwen3-8b                    # 4.31 GB - Good balance of speed and quality
 
-The application supports various models. Popular choices include:
+# High quality reasoning
+qwen3-14b                   # 14.63 GB - Excellent reasoning capabilities
+qwq-32b                     # 17.18 GB - Advanced reasoning model
+qwen3-32b                   # 17.18 GB - Highest quality responses
 
-- `llama-3.2-1b-instruct` (Lightweight, fast)
-- `llama-3.2-3b-instruct` (Balanced performance)
-- `phi-3.5-mini-instruct` (Microsoft's efficient model)
-- `qwen2.5-0.5b-instruct` (Very lightweight)
+# Specialized models
+deepseek-r1-0528-qwen3-8b   # 8.12 GB - DeepSeek reasoning variant
+qwen3-30b-a3b               # 16.01 GB - Optimized 30B variant
+```
 
-## Project Structure
+Load the model in LM Studio's chat tab.
+
+**Model Selection Guide:**
+- **8GB RAM or less**: Use `qwen3-4b`
+- **16GB RAM**: Use `qwen3-8b` or `deepseek-r1-0528-qwen3-8b`
+- **32GB RAM or more**: Use `qwen3-14b`, `qwq-32b`, or `qwen3-32b` for best quality
+
+### Step 3: Setup Lucy
+
+```bash
+# Clone the repository
+git clone <your-repo-url>
+cd lucy
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
+```
+
+### Step 4: Start Chatting
+
+1. Open [http://localhost:3000](http://localhost:3000) in your browser
+2. Select your loaded model from the sidebar
+3. Start chatting with your local AI!
+
+---
+
+## Project Architecture
+
+> **For Advanced Users**: Deep dive into the codebase structure
+
+### Core Technologies
+
+- **Next.js 15**: App Router with server components and API routes
+- **TypeScript**: Full type safety across the entire codebase
+- **React 18**: Modern hooks, contexts, and concurrent features
+- **Tailwind CSS**: Utility-first styling with custom design system
+- **Server-Sent Events**: Real-time streaming communication
+
+### Directory Structure
 
 ```
 lucy/
 ├── app/
-│   ├── api/
-│   │   ├── chat/route.ts          # Chat API endpoint
-│   │   └── models/route.ts        # Model management API
-│   ├── components/
-│   │   ├── ChatInterface.tsx      # Chat UI component
-│   │   ├── ModelManager.tsx       # Model management UI
-│   │   └── TabNavigation.tsx      # Navigation component
-│   ├── layout.tsx
-│   └── page.tsx                   # Main page
-├── package.json
-└── README.md
+│   ├── api/                    # API Routes
+│   │   ├── chat/route.ts      # Streaming chat endpoint
+│   │   └── models/route.ts    # Model management API
+│   ├── components/            # React Components
+│   │   ├── chat/             # Chat-specific components
+│   │   ├── models/           # Model management UI
+│   │   └── layout/           # Layout components
+│   ├── contexts/             # React Context Providers
+│   │   ├── ChatContext.tsx   # Chat state management
+│   │   ├── ModelContext.tsx  # Model state management
+│   │   └── UIContext.tsx     # UI state management
+│   ├── hooks/                # Custom React Hooks
+│   ├── services/             # Business Logic Layer
+│   │   ├── chatService.ts    # Chat API communication
+│   │   └── modelService.ts   # Model API communication
+│   ├── types/                # TypeScript Definitions
+│   │   ├── chat.ts          # Chat-related types
+│   │   ├── models.ts        # Model-related types
+│   │   └── streaming.ts     # Streaming types
+│   └── utils/                # Utility Functions
+│       ├── streamParser.ts   # SSE parsing utilities
+│       ├── modelHelpers.ts   # Model utility functions
+│       └── formatters.ts     # Data formatting utilities
+└── components/ui/            # Reusable UI Components
 ```
 
-## API Endpoints
+### Application Flow
 
-### Chat API (`/api/chat`)
-- **POST**: Send messages to the LLM
-- **Body**: `{ message: string, model?: string }`
-- **Response**: `{ response: string, model: string, timestamp: string }`
+#### 1. Context Architecture
 
-### Models API (`/api/models`)
-- **GET**: List loaded and available models
-- **POST**: Load or unload models
-  - **Body**: `{ action: 'load' | 'unload', modelIdentifier: string }`
+The application uses three main contexts for state management:
 
-## Usage Examples
+- **ModelContext**: Manages available models, loading states, and model selection
+- **ChatContext**: Handles message history, streaming responses, and chat operations  
+- **UIContext**: Controls sidebar visibility and responsive behavior
 
-### Basic Chat
+#### 2. Streaming Implementation
+
 ```typescript
-const response = await fetch('/api/chat', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    message: 'Hello, how are you?',
-    model: 'llama-3.2-1b-instruct'
-  })
-});
+// Server-Sent Events flow
+Client Request → API Route → LM Studio → SSE Stream → React State Updates
 ```
 
-### Model Management
+**Stream Event Types:**
+- `thinking_partial`: Incremental thinking process updates
+- `thinking`: Complete thinking content
+- `response`: Incremental response content  
+- `complete`: Final response with full content
+- `error`: Error states with suggestions
+
+#### 3. Model Management
+
+**Model States:**
+- `available`: Models downloaded but not loaded
+- `loaded`: Models ready for inference
+- `loading`: Models currently being loaded
+
+**Operations:**
 ```typescript
 // Load a model
-await fetch('/api/models', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    action: 'load',
-    modelIdentifier: 'llama-3.2-1b-instruct'
-  })
-});
+await modelService.loadModel('qwen3-8b');
+
+// Switch active model
+modelContext.selectModel('qwen3-14b');
+
+// Unload to free memory
+await modelService.unloadModel('qwen3-4b');
 ```
+
+### API Endpoints
+
+#### Chat API (`/api/chat`)
+
+**Request:**
+```typescript
+interface ChatRequest {
+  message: string;
+  model: string;
+  chatHistory: ChatHistoryItem[];
+}
+```
+
+**Response:** Server-Sent Events stream
+```
+data: {"type": "thinking_partial", "content": "Let me think..."}
+data: {"type": "response", "content": "Hello! How can I help?"}
+data: {"type": "complete", "fullContent": "Hello! How can I help?", "timestamp": "..."}
+```
+
+#### Models API (`/api/models`)
+
+**GET Response:**
+```typescript
+interface ModelsResponse {
+  loaded: Model[];
+  available: Model[];
+  timestamp: string;
+}
+```
+
+**POST Request:**
+```typescript
+interface ModelActionRequest {
+  action: 'load' | 'unload';
+  modelIdentifier: string;
+}
+```
+
+### Key Components
+
+#### ChatContainer
+Main chat interface orchestrating message display and input handling.
+
+#### MessageList  
+Renders message history with support for streaming updates and thinking visualization.
+
+#### ModelSidebar
+Displays available models with loading states and management controls.
+
+#### StreamParser Utilities
+Handles Server-Sent Events parsing and event type differentiation.
+
+### Service Layer
+
+#### chatService.ts
+- Manages HTTP communication with chat API
+- Handles SSE stream parsing and event dispatching
+- Provides request validation and error handling
+
+#### modelService.ts  
+- Interfaces with model management API
+- Handles model loading/unloading operations
+- Provides model metadata and status information
+
+### Type System
+
+The application maintains strict TypeScript definitions across:
+
+- **Chat Types**: Messages, history, and request/response structures
+- **Model Types**: Model metadata, states, and API interfaces  
+- **Streaming Types**: SSE events and parsing results
+
+### Error Handling
+
+Multi-layered error handling approach:
+
+1. **Service Level**: HTTP errors and network issues
+2. **Stream Level**: SSE parsing and connection errors
+3. **Component Level**: UI error states and user feedback
+4. **Context Level**: Global error state management
+
+### Performance Optimizations
+
+- **Stream Processing**: Efficient SSE parsing with buffer management
+- **Context Optimization**: Minimized re-renders through selective context updates
+- **Component Memoization**: Strategic use of React.memo and useMemo
+- **Abort Controllers**: Proper cleanup of streaming requests
+
+---
+
+## Development
+
+### Prerequisites
+
+- Node.js 18+ 
+- LM Studio Desktop Application
+- TypeScript knowledge for advanced customization
+
+### Environment Setup
+
+1. Ensure LM Studio server is running on `http://localhost:1234`
+2. Install dependencies: `npm install`
+3. Start development server: `npm run dev`
+4. Access at `http://localhost:3000`
+
+### Customization
+
+The modular architecture allows easy customization:
+
+- **UI Components**: Modify components in `/components/ui/`
+- **Chat Logic**: Extend services in `/app/services/`
+- **State Management**: Add new contexts in `/app/contexts/`
+- **API Integration**: Modify routes in `/app/api/`
+
+### Building for Production
+
+```bash
+npm run build
+npm start
+```
+
+---
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **"Cannot connect to LM Studio"**
-   - Ensure LM Studio desktop app is running
-   - Check that the local server is enabled
-   - Verify the server is running on `http://localhost:1234`
+**"Cannot connect to LM Studio"**
+- Verify LM Studio is running and server is enabled
+- Check server URL in network settings
+- Ensure no firewall blocking localhost:1234
 
-2. **"Model not available"**
-   - Make sure the model is downloaded and loaded in LM Studio
-   - Try running: `lms get llama-3.2-1b-instruct`
+**"Model not available"**  
+- Download model through LM Studio interface
+- Load model in LM Studio chat tab
+- Refresh model list in Lucy interface
 
-3. **Slow responses**
-   - Consider using a smaller model (e.g., 1B instead of 7B)
-   - Check your system resources (RAM, CPU)
+**Slow streaming responses**
+- Use smaller models (start with qwen3-4b, then try qwen3-8b)
+- Close other applications to free RAM
+- Check CPU usage and system resources
 
-### Performance Tips
-
-- **RAM**: Ensure you have enough RAM for your chosen model
-- **CPU**: Better CPUs will provide faster inference
-- **Model Size**: Start with smaller models (1B-3B parameters) for better performance
+---
 
 ## Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## Resources
-
-- [LM Studio Documentation](https://lmstudio.ai/docs)
-- [LM Studio TypeScript SDK](https://lmstudio.ai/docs/typescript)
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Tailwind CSS](https://tailwindcss.com)
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit changes: `git commit -m 'Add amazing feature'`
+4. Push to branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
 
 ---
 
-Built with ❤️ using Next.js 15 and LM Studio
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+**Built with Next.js 15 and LM Studio for privacy-focused AI conversations**
